@@ -10,6 +10,7 @@ func initt() {
 	const a int = 10
 
 	fmt.Println(a);
+	fmt.Printf("Var a is of type %T\n", a)
 }
 
 func main() {
