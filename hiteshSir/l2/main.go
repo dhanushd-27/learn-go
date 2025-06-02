@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"l2/structs"
+	"l2/struct"
 	"os"
 )
 
@@ -21,6 +21,10 @@ func main() {
 	input, _ := reader.ReadString('\n')
 	fmt.Println("Hello, ", input)
 
-	structs.Val()
-	structs.Pointer()
+	r := structs.Rect{Width: 10, Height: 20}
+	fmt.Println(r.Width, r.Height)
+
+	structs.Val(r)
+
+	fmt.Println(structs.Area(&r))
 }
