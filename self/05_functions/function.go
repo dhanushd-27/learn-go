@@ -4,29 +4,17 @@ import (
 	"fmt"
 )
 
-// Function to add two integers
-func add(a int, b int) int {
-	return a + b
-}
-
-// Anonymous function to print a message
-func addAno(a, b int) (sub int, sum int) {
-	sub = a - b
-	sum = a + b
-	return
-}
-
 func main() {
-	// Call the add function
-	result := add(5, 3)
-	fmt.Println("The sum is:", result)
+	var feb func(int) int
 
-	// Call the add function with different arguments
-	result = add(10, 20)
-	fmt.Println("The sum is:", result)
-
-	// Call the anonymous function
-	sub, sum := addAno(10, 5)
-	fmt.Println("The sum is:", sum)
-	fmt.Println("The sub is:", sub)
+	feb = func(n int) int {
+		if n == 0 {
+			return 0
+		}
+		if n == 1 {
+			return 1
+		}
+		return feb(n-1) + feb(n-2)
+	}
+	fmt.Println(feb(10))
 }
