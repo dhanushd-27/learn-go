@@ -1,5 +1,5 @@
 server-up:
-	cd cmd/server && go run main.go
+	go run ./cmd/server
 
 docker-up:
 	docker compose -f docker.compose.yml up -d

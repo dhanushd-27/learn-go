@@ -17,5 +17,5 @@ func main() {
 
 	routes.HealthRoutes(e)
 
-	e.Logger.Fatal(e.Start(c.Config.PORT))
+	e.Logger.Fatal(e.Start(":" + c.Config.PORT))
 }
