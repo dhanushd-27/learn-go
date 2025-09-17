@@ -13,25 +13,24 @@ type Container struct {
 	Config *config.Config
 }
 
-func NewContainer() (*Container, error) {
-	// Load configuration
-	config, err := config.Load()
-	if err != nil {
-		return nil, err
-	}
-
-	// Create database service and connect
-	dbService := db.NewDatabaseService(config)
-	if err := dbService.Connect(context.Background()); err != nil {
+func NewContainer(ctx context.Context, cfg *config.Config) (*Container, error) {
+	dbService := db.NewDatabaseService(cfg)
+	if err := dbService.Connect(ctx); err != nil {
 		return nil, err
 	}
 
 	return &Container{
 		db:     dbService.GetPool(),
-		Config: config,
+		Config: cfg,
 	}, nil
 }
 
 func (dc *Container) GetDB() *pgxpool.Pool {
 	return dc.db
+}
+
+func (dc *Container) Close() {
+	if dc.db != nil {
+		dc.db.Close()
+	}
 }
