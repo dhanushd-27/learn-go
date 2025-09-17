@@ -13,3 +13,6 @@ Follow the instructions from the [official golang-migrate repository](https://gi
 ### Steps to for migration
 - export POSTGRES_URL=postgres://postgres:postgres@localhost:5438/learn-go?sslmode=disable
 - migrate -database ${POSTGRES_URL} -path internal/db/migrations up
+
+### Verify using these commands in pg running on a docker
+- https://hasura.io/blog/top-psql-commands-and-flags-you-need-to-know-postgresql
