@@ -1,7 +1,9 @@
 package container
 
 import (
+	"context"
 	"learn-go/internal/config"
+	"learn-go/internal/db"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -12,14 +14,20 @@ type Container struct {
 }
 
 func NewContainer() (*Container, error) {
-	// Write code here to connect with db
+	// Load configuration
 	config, err := config.Load()
 	if err != nil {
 		return nil, err
 	}
 
+	// Create database service and connect
+	dbService := db.NewDatabaseService(config)
+	if err := dbService.Connect(context.Background()); err != nil {
+		return nil, err
+	}
+
 	return &Container{
-		db:     nil,
+		db:     dbService.GetPool(),
 		Config: config,
 	}, nil
 }

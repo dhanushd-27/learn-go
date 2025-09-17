@@ -8,7 +8,13 @@ import (
 )
 
 type Config struct {
-	PORT string
+	PORT        string
+	DB_HOST     string
+	DB_PORT     string
+	DB_USER     string
+	DB_PASSWORD string
+	DB_NAME     string
+	SSL_MODE    string
 }
 
 func Load() (*Config, error) {
@@ -19,7 +25,13 @@ func Load() (*Config, error) {
 	}
 
 	config := &Config{
-		PORT: getEnv("PORT"),
+		PORT:        getEnv("PORT"),
+		DB_HOST:     getEnv("DB_HOST"),
+		DB_PORT:     getEnv("DB_PORT"),
+		DB_USER:     getEnv("DB_USER"),
+		DB_PASSWORD: getEnv("DB_PASSWORD"),
+		DB_NAME:     getEnv("DB_NAME"),
+		SSL_MODE:    getEnv("SSL_MODE"),
 	}
 
 	return config, nil
