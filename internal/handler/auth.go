@@ -17,10 +17,10 @@ import (
 type AuthHandler struct {
 	db     *pgxpool.Pool
 	config *config.Config
-	query  *sqlc.Queries
+	query  sqlc.Querier
 }
 
-func NewAuthHandler(db *pgxpool.Pool, cfg *config.Config, query *sqlc.Queries) *AuthHandler {
+func NewAuthHandler(db *pgxpool.Pool, cfg *config.Config, query sqlc.Querier) *AuthHandler {
 	return &AuthHandler{db: db, config: cfg, query: query}
 }
 
@@ -49,6 +49,14 @@ func (h *AuthHandler) Signup(c echo.Context) error {
 		})
 	}
 
+	// Check if user already exists
+	ctx := context.Background()
+	_, err := h.query.GetUserByEmail(ctx, req.Email)
+	if err == nil {
+		return c.JSON(http.StatusConflict, map[string]string{
+			"error": "User with this email already exists",
+		})
+	}
 	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -58,7 +66,6 @@ func (h *AuthHandler) Signup(c echo.Context) error {
 	}
 
 	// Insert user into database
-	ctx := context.Background()
 	user, err := h.query.CreateUser(ctx, sqlc.CreateUserParams{
 		Email:    req.Email,
 		Password: string(hashedPassword),
