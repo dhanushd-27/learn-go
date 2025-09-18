@@ -13,7 +13,7 @@ import (
 type UserHandler struct {
 	db     *pgxpool.Pool
 	config *config.Config
-	query  *sqlc.Queries
+	query  sqlc.Querier
 }
 
 func NewUserHandler(db *pgxpool.Pool, cfg *config.Config, query *sqlc.Queries) *UserHandler {

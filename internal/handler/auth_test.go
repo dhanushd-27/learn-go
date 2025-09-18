@@ -265,3 +265,13 @@ func TestAuthHandler_Login(t *testing.T) {
 		mockDB.AssertExpectations(t)
 	})
 }
+
+func TestAuthHandler_Me(t *testing.T) {
+	// e := echo.New()
+
+	// cfg := &config.Config{
+	// 	JWT_SECRET: "test",
+	// }
+
+	// Test case 1: Valid user
+}
