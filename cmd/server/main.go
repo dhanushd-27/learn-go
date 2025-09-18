@@ -27,10 +27,12 @@ func main() {
 
 	// Handlers
 	authHandler := handler.NewAuthHandler(c.GetDB(), c.GetConfig(), c.GetQuery())
+	userHandler := handler.NewUserHandler(c.GetDB(), c.GetConfig(), c.GetQuery())
 
 	// Routes
 	routes.HealthRoutes(e)
 	routes.AuthRoutes(e, authHandler)
+	routes.UserRoutes(e, userHandler, c.GetConfig())
 
 	e.Logger.Fatal(e.Start(":" + c.GetConfig().PORT))
 }
