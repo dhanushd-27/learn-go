@@ -15,6 +15,7 @@ type Config struct {
 	DB_PASSWORD string
 	DB_NAME     string
 	SSL_MODE    string
+	JWT_SECRET  string
 }
 
 func Load() (*Config, error) {
@@ -32,6 +33,7 @@ func Load() (*Config, error) {
 		DB_PASSWORD: getEnv("DB_PASSWORD"),
 		DB_NAME:     getEnv("DB_NAME"),
 		SSL_MODE:    getEnv("SSL_MODE"),
+		JWT_SECRET:  getEnv("JWT_SECRET"),
 	}
 
 	return config, nil

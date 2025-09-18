@@ -26,11 +26,11 @@ func main() {
 	defer c.Close()
 
 	// Handlers
-	authHandler := handler.NewAuthHandler(c.GetDB(), c.Config)
+	authHandler := handler.NewAuthHandler(c.GetDB(), c.GetConfig(), c.GetQuery())
 
 	// Routes
 	routes.HealthRoutes(e)
 	routes.AuthRoutes(e, authHandler)
 
-	e.Logger.Fatal(e.Start(":" + c.Config.PORT))
+	e.Logger.Fatal(e.Start(":" + c.GetConfig().PORT))
 }
