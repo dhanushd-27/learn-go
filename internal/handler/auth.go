@@ -105,12 +105,6 @@ func (h *AuthHandler) Login(c echo.Context) error {
 		})
 	}
 
-	if err != nil {
-		return c.JSON(http.StatusNotFound, map[string]string{
-			"error": "User not found",
-		})
-	}
-
 	// Compare password
 	if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(req.Password)); err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]string{
