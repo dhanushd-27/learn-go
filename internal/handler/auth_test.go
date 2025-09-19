@@ -267,11 +267,101 @@ func TestAuthHandler_Login(t *testing.T) {
 }
 
 func TestAuthHandler_Me(t *testing.T) {
-	// e := echo.New()
+	e := echo.New()
 
-	// cfg := &config.Config{
-	// 	JWT_SECRET: "test",
-	// }
+	cfg := &config.Config{
+		JWT_SECRET: "test",
+	}
 
 	// Test case 1: Valid user
+	t.Run("Valid Request", func(t *testing.T) {
+		// mockDB
+		// mock the db call
+		// write request body
+		// make the http test request
+		// set the header
+		// create a new context with recorder and request body
+		// call the handler
+		// assert the response
+		// assert the status code
+		// assert the response body
+		// assert the response body
+
+		mockDB := mocks.NewMockQuerier(t)
+
+		// Hash the password for the test
+		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("testpassword"), bcrypt.DefaultCost)
+		expectedUser := sqlc.User{
+			ID:       1,
+			Email:    "test@test.com",
+			Password: string(hashedPassword),
+		}
+
+		// Auth Handler
+		authHandler := &AuthHandler{
+			config: cfg,
+			query:  mockDB,
+		}
+
+		// Mock the GetUserByEmail to return the expected user
+		mockDB.On("GetUserByEmail", mock.Anything, "test@test.com").Return(expectedUser, nil)
+
+		// Create request body
+		requestBody := `{"email":"test@test.com","password":"testpassword"}`
+		req := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(requestBody))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+
+		// Call the handler
+		err := authHandler.Login(c)
+
+		// Assertions
+		assert.NoError(t, err)
+		assert.Equal(t, http.StatusOK, rec.Code)
+
+		var response map[string]interface{}
+		err = json.Unmarshal(rec.Body.Bytes(), &response)
+		assert.NoError(t, err)
+		assert.Equal(t, "login successful", response["message"])
+		assert.Equal(t, "ok", response["status"])
+		assert.NotEmpty(t, response["token"])
+		// Check for auth cookie
+		cookies := rec.Result().Cookies()
+		var authCookie *http.Cookie
+		for _, cookie := range cookies {
+			if cookie.Name == "token" {
+				authCookie = cookie
+				break
+			}
+		}
+		assert.NotNil(t, authCookie)
+		assert.NotEmpty(t, authCookie.Value)
+
+		// Create user handler
+		userHandler := &UserHandler{
+			config: cfg,
+			query:  mockDB,
+		}
+
+		// Mock the GetUserById for the /me endpoint
+		mockDB.On("GetUserById", mock.Anything, int32(1)).Return(expectedUser, nil)
+
+		// Create /me request with auth cookie
+		meReq := httptest.NewRequest(http.MethodGet, "/me", nil)
+		meReq.AddCookie(authCookie)
+		meRec := httptest.NewRecorder()
+		meCtx := e.NewContext(meReq, meRec)
+		// Normally middleware sets this from the JWT; set it directly for the unit test
+		meCtx.Set("user_id", int32(1))
+
+		// Call the /me handler
+		err = userHandler.Me(meCtx)
+
+		// Assertions for /me endpoint
+		assert.NoError(t, err)
+		assert.Equal(t, http.StatusOK, meRec.Code)
+
+		mockDB.AssertExpectations(t)
+	})
 }
